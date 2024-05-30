@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Détails de la Commande</title>
+<style>
+  body {
+      font-family: Arial, sans-serif;
+  }
+
+  table {
+      width: 70%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+  }
+
+  th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+  }
+
+  th {
+      background-color: #f2f2f2;
+  }
+
+  img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+  }
+
+  h1 {
+      text-align: center;
+  }
+
+  .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+  }
+
+  .btn.accept {
+      background-color: green;
+  }
+  .btn.accept:hover {
+    background-color: rgb(3, 73, 3);
+  }
+
+  .btn.reject {
+      background-color: rgba(255, 0, 0, 0.911);
+  }
+  .btn.reject:hover {
+    background-color: red;
+  }
+
+  a {
+      color: #204b35;
+  }
+
+  .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 50px;
+      font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="logo"><a href="les commandes N&T.html">Needle&Thread</a></div>
+  <br>
+  <h1>Détails de la Commande</h1>
+  
+  <!-- Tableau pour les informations du contact -->
+  <h2>Informations du Contact</h2>
+  <table id="contactDetails">
+    <tr>
+      <th>Nom</th>
+      <th>Numéro de téléphone</th>
+      <th>Adresse</th>
+    </tr>
+  </table>
+  <br>
+
+  <!-- Tableau pour les mesures -->
+  <h2>Mesures</h2>
+  <table id="measurements">
+    <tr>
+      <th>LE</th>
+      <th>TP</th>
+      <th>HP</th>
+      <th>HB</th>
+      <th>TT</th>
+      <th>LV</th>
+      <th>TH</th>
+      <th>LL</th>
+      <th>LB</th>
+      <th>TB</th>
+      <th>T Poignet</th>
+      <th>Longueur</th>
+    </tr>
+  </table>
+  <br>
+
+  <!-- Tableau pour l'image et la couleur correspondante -->
+  <h2>Image et Couleur</h2>
+  <table id="imageColor">
+    <tr>
+      <th>Numéro</th>
+      <th>Image</th>
+      <th>Couleur</th>
+    </tr>
+  </table>
+  <br>
+
+  <div style="text-align: center;">
+    <button class="btn reject" onclick="updateOrderStatus('Refusée')">Refuser</button>
+    <button class="btn accept" onclick="updateOrderStatus('Acceptée')">Accepter</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+      authDomain: "projet-l3-5ea99.firebaseapp.com",
+      projectId: "projet-l3-5ea99",
+      storageBucket: "projet-l3-5ea99.appspot.com",
+      messagingSenderId: "691672960463",
+      appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Fonction pour récupérer les détails de la commande à partir de Firestore
+    function getOrderDetails(orderId) {
+      // Récupérer les éléments du DOM pour afficher les informations
+      const contactDetailsTable = document.getElementById('contactDetails');
+      const measurementsTable = document.getElementById('measurements');
+      const imageColorTable = document.getElementById('imageColor');
+
+      // Récupérer la commande à partir de Firestore
+      db.collection("commande").doc(orderId).get()
+      .then(function(doc) {
+          if (doc.exists) {
+              const orderData = doc.data();
+              // Afficher les informations du contact
+              contactDetailsTable.innerHTML += `
+                <tr>
+                  <td>${orderData.name}</td>
+                  <td>${orderData.phone}</td>
+                  <td>${orderData.adress}</td>
+                </tr>
+              `;
+
+              // Afficher les mesures dans le tableau correspondant
+              measurementsTable.innerHTML += `
+                <tr>
+                  <td>${orderData.mesure1}</td>
+                  <td>${orderData.mesure2}</td>
+                  <td>${orderData.mesure3}</td>
+                  <td>${orderData.mesure4}</td>
+                  <td>${orderData.mesure5}</td>
+                  <td>${orderData.mesure6}</td>
+                  <td>${orderData.mesure7}</td>
+                  <td>${orderData.mesure8}</td>
+                  <td>${orderData.mesure9}</td>
+                  <td>${orderData.mesure10}</td>
+                  <td>${orderData.mesure11}</td>
+                  <td>${orderData.mesure12}</td>
+                </tr>
+              `;
+
+              // Afficher l'image de la commande et la couleur correspondante
+              imageColorTable.innerHTML += `
+                <tr>
+                  <td>1</td>
+                  <td><img src="${orderData.image1}" alt="Image de la commande"></td>
+                  <td style="background-color: ${orderData.couleur1};"></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><img src="${orderData.image2}" alt="Image de la commande"></td>
+                  <td style="background-color: ${orderData.couleur2};"></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><img src="${orderData.image3}" alt="Image de la commande"></td>
+                  <td style="background-color: ${orderData.couleur3};"></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><img src="${orderData.image4}" alt="Image de la commande"></td>
+                  <td style="background-color: ${orderData.couleur4};"></td>
+                </tr>
+              `;
+          } else {
+              console.log("Aucun document trouvé!");
+          }
+      })
+      .catch(function(error) {
+          console.log("Erreur lors de la récupération des données:", error);
+      });
+    }
+
+    // Fonction pour mettre à jour l'état de la commande et masquer les boutons
+    function updateOrderStatus(status) {
+      const orderId = new URLSearchParams(window.location.search).get('id');
+      db.collection("commande").doc(orderId).update({
+        etat: status
+      })
+      .then(() => {
+        alert(`Commande ${status}`);
+        // Masquer les boutons après la mise à jour de l'état
+        document.querySelector('.btn.reject').style.display = 'none';
+        document.querySelector('.btn.accept').style.display = 'none';
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la mise à jour de l'état de la commande:", error);
+      });
+    }
+
+    // Appeler la fonction pour récupérer et afficher les détails de la commande
+    const orderId = new URLSearchParams(window.location.search).get('id');
+    getOrderDetails(orderId);
+  </script>
+</body>
+</html>

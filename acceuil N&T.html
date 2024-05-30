@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil N&T</title>
+    <style>
+        body {
+            background-image: url("background\ acceuil2.jpg");
+            background-color: whitesmoke;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 1rem;
+        }
+        .logo {
+            font-size: 30px;
+            color: #204b35;
+            font-style: italic;
+        }
+        ul {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+            margin-right: 2em;
+        }
+        li a {
+            text-decoration: none;
+            margin: 1rem;
+            margin-top: 8px; 
+            color: #204b35;
+            font-size: 22px;
+        }
+        li a:hover {
+            color: rgb(155, 155, 49);
+        }
+        button {
+            font-family: 'Poppins', sans-serif;
+            background-color: #204b35;
+            color: whitesmoke;
+            border-radius: 5px;
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: rgb(155, 155, 49);
+        }
+        #btn-dark-filled {
+            background-color: rgb(155, 155, 49);
+            color: whitesmoke;
+            border: 1px solid rgb(129, 129, 43);
+            border-radius: 5px;
+            font-size: 20px;
+            padding: 0.5rem 1rem;
+        }
+        #btn-dark-filled:hover {
+            background-color: #204b35;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: rgb(226, 225, 225);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: #204b35;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: rgb(155, 155, 49);
+            color: white;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropbtn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+        }
+        .dropbtn:hover {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Needle&Thread</div>
+        <ul>
+            <li><a href="acceuil N&T.html">Accueil</a></li>
+            <li><a href="Boutique N&T.html">Boutique</a></li>
+            <li><a href="a propos N&T.html">À propos</a></li>
+        </ul>
+        <nav id="nav-buttons">
+            <a href="login N&T.html">
+                <button id="btn-dark-outline">Connecter</button>
+            </a>
+        </nav>
+    </div>
+    <div style="width: 600px; margin-left: 2rem;">
+        <h1 style="font-size: 60px;">Bienvenue chez <br>Needle & Thread!</h1>
+        <p style="font-size: 40px; font-weight: 400;">
+            Où l'élégance rencontre la créativité et la qualité
+        </p>
+        <a href="boutique N&T.html">
+            <button id="btn-dark-filled">Commencer</button>
+        </a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        // Initialisez Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+            authDomain: "projet-l3-5ea99.firebaseapp.com",
+            projectId: "projet-l3-5ea99",
+            storageBucket: "projet-l3-5ea99.appspot.com",
+            messagingSenderId: "691672960463",
+            appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const navButtons = document.getElementById('nav-buttons');
+
+            if (user) {
+                const dropdownContainer = document.createElement('div');
+                dropdownContainer.classList.add('dropdown');
+
+                const dropbtn = document.createElement('button');
+                dropbtn.classList.add('dropbtn');
+                
+                // Créer et ajouter l'icône SVG
+                const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svgIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svgIcon.setAttribute('width', '40');
+                svgIcon.setAttribute('height', '40');
+                svgIcon.setAttribute('color', '#204b35');
+                svgIcon.setAttribute('fill', 'currentColor');
+                svgIcon.setAttribute('class', 'bi bi-person-circle dropbtn');
+                svgIcon.setAttribute('viewBox', '0 0 16 16');
+
+                const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path1.setAttribute('d', 'M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0');
+
+                const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path2.setAttribute('fill-rule', 'evenodd');
+                path2.setAttribute('d', 'M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1');
+
+                svgIcon.appendChild(path1);
+                svgIcon.appendChild(path2);
+                
+                dropbtn.appendChild(svgIcon);
+
+                const dropdownContent = document.createElement('div');
+                dropdownContent.classList.add('dropdown-content');
+
+                const ordersLink = document.createElement('a');
+                ordersLink.href = 'les commandes N&T.html'; 
+                ordersLink.textContent = 'Les commandes';
+
+                const logoutLink = document.createElement('a');
+                logoutLink.href = 'acceuil N&T.html';
+                logoutLink.id = 'logout-btn';
+                logoutLink.textContent = 'Déconnexion';
+
+                dropdownContent.appendChild(ordersLink);
+                dropdownContent.appendChild(logoutLink);
+
+                dropdownContainer.appendChild(dropbtn);
+                dropdownContainer.appendChild(dropdownContent);
+
+                navButtons.innerHTML = ''; // Supprime tout contenu existant dans navButtons
+                navButtons.appendChild(dropdownContainer);
+
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

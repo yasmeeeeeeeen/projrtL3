@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de l'Achat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            margin: auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .btn.accept {
+            background-color: green;
+        }
+
+        .btn.accept:hover {
+            background-color: rgb(3, 73, 3);
+        }
+
+        .btn.reject {
+            background-color: rgba(255, 0, 0, 0.849);
+        }
+
+        .btn.reject:hover {
+            background-color: rgb(241, 2, 2);
+        }
+
+        a {
+            color: #204b35;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .color-circle {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .product-img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo"><a href="les commandes N&T.html">Needle&Thread</a></div>
+    <h1>Détails de la Commande</h1>
+
+    <h2>Informations du Contact</h2>
+    <table id="contactDetails">
+        <tr>
+            <th>Nom</th>
+            <th>Numéro de Téléphone</th>
+            <th>Adresse</th>
+        </tr>
+    </table>
+
+    <h2>Informations sur le Produit</h2>
+    <table id="infos">
+        <tr>
+            <th>Modèle</th>
+            <th>Couleur</th>
+            <th>Taille</th>
+            <th>Prix</th>
+            <th>Image</th>
+        </tr>
+    </table>
+
+    <div style="text-align: center;">
+        <button class="btn reject" onclick="updateOrderStatus('Refusée')">Refuser</button>
+        <button class="btn accept" onclick="updateOrderStatus('Acceptée')">Accepter</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+            authDomain: "projet-l3-5ea99.firebaseapp.com",
+            projectId: "projet-l3-5ea99",
+            storageBucket: "projet-l3-5ea99.appspot.com",
+            messagingSenderId: "691672960463",
+            appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Fonction pour récupérer les détails de la commande à partir de Firestore
+        function getOrderDetails(orderId) {
+            // Récupérer les éléments du DOM pour afficher les informations
+            const contactDetailsTable = document.getElementById('contactDetails');
+            const infosTable = document.getElementById('infos');
+
+            // Récupérer la commande à partir de Firestore
+            db.collection("achatcommandes").doc(orderId).get()
+            .then(function(doc) {
+                if (doc.exists) {
+                    const orderData = doc.data();
+                    // Afficher les informations du contact
+                    contactDetailsTable.innerHTML = `
+                    <tr>
+            <th>Nom</th>
+            <th>Numéro de Téléphone</th>
+            <th>Adresse</th>
+        </tr>
+                        <tr>
+                            <td>${orderData.nom}</td>
+                            <td>${orderData.telephone}</td>
+                            <td>${orderData.adresse}</td>
+                        </tr>
+                    `;
+
+                    // Afficher les infos du produit
+                    infosTable.innerHTML = `
+                     <tr>
+            <th>Modèle</th>
+            <th>Couleur</th>
+            <th>Taille</th>
+            <th>Prix</th>
+            <th>Image</th>
+        </tr>
+                        <tr>
+                            <td>${orderData.produit}</td>
+                            <td><div class="color-circle" style="background-color: ${orderData.couleur};"></div></td>
+                            <td>${orderData.taille}</td>
+                            <td>${orderData.prix}</td>
+                            <td><img src="${orderData.image}" alt="Produit Image" class="product-img"></td>
+                        </tr>
+                    `;
+                } else {
+                    console.log("Aucun document trouvé!");
+                }
+            })
+            .catch(function(error) {
+                console.log("Erreur lors de la récupération des données:", error);
+            });
+        }
+
+        // Fonction pour mettre à jour l'état de la commande et masquer les boutons
+        function updateOrderStatus(status) {
+            const orderId = new URLSearchParams(window.location.search).get('id');
+            db.collection("achatcommandes").doc(orderId).update({
+                etat: status
+            })
+            .then(() => {
+                alert(`Commande ${status}`);
+                // Masquer les boutons après la mise à jour de l'état
+                document.querySelector('.btn.reject').style.display = 'none';
+                document.querySelector('.btn.accept').style.display = 'none';
+            })
+            .catch((error) => {
+                console.error("Erreur lors de la mise à jour de l'état de la commande:", error);
+            });
+        }
+
+        // Appeler la fonction pour récupérer et afficher les détails de la commande
+        const orderId = new URLSearchParams(window.location.search).get('id');
+        getOrderDetails(orderId);
+    </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couturier Page</title>
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:wght@100;200;300;400;500;600&display=swap');
+
+        :root {
+            
+            --black: #333;
+            --white: #fff;
+            --bg-color: #eee;
+            --box-shadow: 0.5rem 1rem rgba(0,0,0,0.1);
+            --border: .1rem solid var(--black);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            border: none;
+            text-decoration: none;
+            text-transform: capitalize;
+        }
+
+        html {
+            font-size: 62.5%;
+            overflow-x: hidden;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            cursor: pointer;
+            border-radius: .5rem;
+            margin-top: 1rem;
+            font-size: 1.7rem;
+            padding: 1rem 3rem;
+            background: #204b35;
+            color: var(--white);
+        }
+
+        .btn:hover {
+            background: rgb(155, 155, 49);
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+
+        .admin-product-form-container {
+            max-width: 50rem;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: .5rem;
+            background: var(--bg-color);
+        }
+
+        .admin-product-form-container h3 {
+            text-transform: uppercase;
+            color: var(--black);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .admin-product-form-container .box {
+            width: 100%;
+            border-radius: .5rem;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.7rem;
+            margin: 1rem 0;
+            background: var(--white);
+            text-transform: none;
+        }
+
+        .product-display {
+            margin: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .product-display-table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        .product-display-table thead {
+            background: var(--bg-color);
+        }
+
+        .product-display-table th,
+        .product-display-table td {
+            padding: 1rem;
+            font-size: 2rem;
+            border-bottom: var(--border);
+        }
+
+        input:not([type="checkbox"]){
+            width: 100%;
+        }
+
+        .sizes{
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .size-checkbox-wrapper {
+            position: relative;
+            width: 100px;
+            height: 40px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .size-checkbox {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .size-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border: 1px solid grey;
+            border-radius: 5px;
+            position: relative;
+            z-index: 1;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .size-checkbox:checked + .size-label {
+            background-color: rgb(155, 155, 49);
+            color: white;
+        }
+        .color {
+    margin-top: 30px;
+}
+
+.colors {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.color-checkbox-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.color-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.color-label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid grey;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+}
+.color-checkbox:checked + .color-label {
+   
+    border: 4px solid rgb(155, 155, 49);
+}
+        @media (max-width: 991px) {
+            html {
+                font-size: 55%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-display {
+                overflow-y: auto;
+            }
+
+            .product-display-table {
+                width: 80rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            html {
+                font-size: 50%;
+            }
+        }
+        a {
+            color: #204b35;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 50px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo"><a href="acceuil N&T.html">Needle&Thread</a></div>
+    <div class="container">
+        <div class="admin-product-form-container">
+            <h3>Ajouter un nouveau modèle</h3>
+            <form id="product-form">
+                <input type="text" placeholder="Nom du modèle" name="product_name" class="box" required>
+                <input type="text" placeholder="Ajouter une description" name="product_desc" class="box" required>
+                <select id="type" class="box" required>
+                    <option value="">Choisir catégorie</option>
+                    <option value="traditionnel">Traditionnel</option>
+                    <option value="sport">Sport</option>
+                    <option value="classique">Classique</option>
+                    <option value="casual">Casual</option>
+                    <option value="soirée">Soirée</option>
+                </select>
+                <input type="number" placeholder="Prix" name="product_price" class="box" required>
+                <input type="file" accept="image/png,image/webp, image/jpeg, image/jpg" name="product_image" class="box" required>
+                
+                <div class="color">
+                    <p class="text">Couleurs disponibles:</p>
+                    <div class="colors" id="colors">
+                        <div class="color-checkbox-wrapper" >
+                            <input type="checkbox" class="color-checkbox" id="color1" value="#fdfcfd"> 
+                            <label for="color1" class="color-label" style="background-color:#fdfcfd;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color2" value="#e3fd85"> 
+                            <label for="color2" class="color-label" style="background-color:#e3fd85;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color3" value="#fd2903"> 
+                            <label for="color3" class="color-label" style="background-color:#fd2903;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color4" value="#f38bc8"> 
+                            <label for="color4" class="color-label" style="background-color:#f38bc8;"></label>
+                        </div>
+                       
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color5" value="#A8CD9F"> 
+                            <label for="color5" class="color-label" style="background-color:#A8CD9F;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color6" value="#44643c"> 
+                            <label for="color6" class="color-label" style="background-color:#44643c;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color7" value="#AD88C6"> 
+                            <label for="color7" class="color-label" style="background-color:#AD88C6;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color8" value="#7469B6"> 
+                            <label for="color8" class="color-label" style="background-color:#7469B6;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color9" value="#822659"> 
+                            <label for="color9" class="color-label" style="background-color:#822659;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color10" value="#1B1A55"> 
+                            <label for="color10" class="color-label" style="background-color:#1B1A55;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color11" value="#070F2B"> 
+                            <label for="color11" class="color-label" style="background-color:#070F2B;"></label>
+                        </div>
+                        <div class="color-checkbox-wrapper">
+                            <input type="checkbox" class="color-checkbox" id="color12" value="#5f5e5e"> 
+                            <label for="color12" class="color-label" style="background-color:#5f5e5e;"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="size">
+                    <p class="text">Les tailles disponibles:</p>
+                    <div class="sizes">
+                        <div class="size-checkbox-wrapper">
+                            <input type="checkbox" class="size-checkbox" id="s" value="S"> 
+                            <label for="s" class="size-label">S</label>
+                        </div>
+                        <div class="size-checkbox-wrapper">
+                            <input type="checkbox" class="size-checkbox" id="m" value="M"> 
+                            <label for="m" class="size-label">M</label>
+                        </div>
+                        <div class="size-checkbox-wrapper">
+                            <input type="checkbox" class="size-checkbox" id="l" value="L"> 
+                            <label for="l" class="size-label">L</label>
+                        </div>
+                        <div class="size-checkbox-wrapper">
+                            <input type="checkbox" class="size-checkbox" id="xl" value="XL"> 
+                            <label for="xl" class="size-label">XL</label>
+                        </div>
+                        <div class="size-checkbox-wrapper">
+                            <input type="checkbox" class="size-checkbox" id="xxl" value="XXL"> 
+                            <label for="xxl" class="size-label">XXL</label>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" class="btn" value="Ajouter modèle">
+            </form>
+        </div>
+    </div>
+    <div class="product-display">
+        <table class="product-display-table">
+            <thead>
+                <tr>
+                    <td>Image de modèle</td>
+                    <td>Nom de modèle</td>
+                    <td>Prix</td>
+                    <td>Tailles disponibles</td>
+                    <td> Couleurs disponibles</td>
+                    <td>Couturier</td>
+                    
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody id="product-table-body">
+               
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Firebase JavaScript SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+            authDomain: "projet-l3-5ea99.firebaseapp.com",
+            projectId: "projet-l3-5ea99",
+            storageBucket: "projet-l3-5ea99.appspot.com",
+            messagingSenderId: "691672960463",
+            appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the Firestore service
+        const db = firebase.firestore();
+
+        // Reference to the product form
+        const productForm = document.getElementById('product-form');
+
+        // Event listener for form submission
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Empêche la soumission du formulaire de recharger la page
+
+            // Capture les données du formulaire
+            const productName = productForm['product_name'].value;
+            const productDesc = productForm['product_desc'].value; 
+            const productPrice = productForm['product_price'].value;
+            const type = document.getElementById('type').value;
+
+            const productSizes = [];
+            document.querySelectorAll('.size-checkbox:checked').forEach((checkbox) => {
+                productSizes.push(checkbox.value);
+            });
+
+            const productColors = [];
+            document.querySelectorAll('.color-checkbox:checked').forEach((checkbox) => {
+                productColors.push(checkbox.value);
+            });
+
+            // Convert the image file to base64
+            const productImageFile = productForm['product_image'].files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(productImageFile);
+            reader.onloadend = function () {
+                const productImage = reader.result; // base64 image
+
+                // Get the currently logged-in user
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    const userId = user.uid;
+
+                    // Retrieve the couturier's name from Firestore using the user's ID
+                    db.collection('couturiers').doc(userId).get().then((doc) => {
+                        if (doc.exists) {
+                            const couturierName = doc.data().username;
+
+                            // Add product to Firestore with the couturier's name
+                            db.collection('produit').add({
+                                productName: productName,
+                                productDesc: productDesc,
+                                productPrice: productPrice,
+                                couturierName: couturierName,
+                                productSizes: productSizes,
+                                productColors: productColors,
+                                type: type,
+                                productImage: productImage
+                            })
+                            .then((docRef) => {
+                                console.log('Product added with ID: ', docRef.id);
+                                // Clear form fields after successful submission
+                                productForm.reset();
+                                console.log('Product added successfully:', productName);
+                                loadProducts(); // Reload products to include the new one
+                            })
+                            .catch((error) => {
+                                console.error('Error adding product: ', error);
+                            });
+                        } else {
+                            console.log("No such document!");
+                        }
+                    }).catch((error) => {
+                        console.log("Error getting document:", error);
+                    });
+                } else {
+                    console.log("No user is currently signed in.");
+                }
+            };
+        });
+
+        // Function to load products from Firestore and display them in the table
+        function loadProducts() {
+            db.collection('produit').get().then((querySnapshot) => {
+                const tableBody = document.getElementById('product-table-body');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                querySnapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const row = document.createElement('tr');
+
+                    const imageCell = document.createElement('td');
+                    const img = document.createElement('img');
+                    img.src = product.productImage; // Set image source to base64
+                    img.style.width = '100px'; // Set image width
+                    imageCell.appendChild(img);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = product.productName;
+
+                    const priceCell = document.createElement('td');
+                    priceCell.textContent = product.productPrice;
+
+                    const couturierCell = document.createElement('td');
+                    couturierCell.textContent = product.couturierName;
+
+                    const sizesCell = document.createElement('td');
+                    sizesCell.textContent = product.productSizes.join(', ');
+
+                    const colorsCell = document.createElement('td');
+                    colorsCell.textContent = product.productColors.join(', ');
+
+                    const actionCell = document.createElement('td');
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Supprimer';
+                    deleteBtn.addEventListener('click', () => {
+                        db.collection('produit').doc(doc.id).delete().then(() => {
+                            console.log('Product successfully deleted!');
+                            loadProducts(); // Reload products after deletion
+                        }).catch((error) => {
+                            console.error('Error removing product: ', error);
+                        });
+                    });
+                    actionCell.appendChild(deleteBtn);
+
+                    row.appendChild(imageCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(priceCell);
+                    row.appendChild(sizesCell);
+                    row.appendChild(colorsCell); 
+                    row.appendChild(couturierCell);
+                    row.appendChild(actionCell);
+
+                    tableBody.appendChild(row);
+                });
+            });
+        }
+
+        // Load products when the page loads
+        document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+
+</body>
+</html>

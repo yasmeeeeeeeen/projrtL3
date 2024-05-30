@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interface de Commandes</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0 auto; /* Centrer le tableau horizontalement */
+}
+
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+   
+}
+
+th:first-child, td:first-child {
+    width: 2%;
+}
+
+
+
+h1 {
+    text-align: center;
+}
+.button-view-details {
+    background-color: blue;
+    color: white;
+    width: 40%;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.button-view-details:hover {
+    background-color: rgb(10, 10, 219);
+}
+
+.action-cell {
+    text-align: center;
+}
+a{
+  color: #204b35; 
+ 
+}
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 50px;
+    font-weight: bold; 
+    
+}
+
+</style>
+</head>
+<body>
+  <div class="logo" ><a href="acceuil N&T.html">Needle&Thread</a>   </div>
+  <br>
+  <h1>Commandes Personnalisées</h1>
+  <table id="customOrdersTable">
+    <thead>
+      <tr>
+        <th>Numéro</th>
+        <th>Nom Complet</th>
+        <th>Action</th>
+        <th>Etat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les données seront ajoutées ici dynamiquement -->
+    </tbody>
+  </table>
+
+  <h1>Commandes d'Achats dans la Boutique</h1>
+  <table id="shopOrdersTable">
+    <thead>
+      <tr>
+        <th>Numéro</th>
+        <th>Nom Complet</th>
+        <th>Action</th>
+        <th>Etat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les données seront ajoutées ici dynamiquement -->
+    </tbody>
+    
+  </table>
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script>
+      const firebaseConfig = {
+          apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+          authDomain: "projet-l3-5ea99.firebaseapp.com",
+          projectId: "projet-l3-5ea99",
+          storageBucket: "projet-l3-5ea99.appspot.com",
+          messagingSenderId: "691672960463",
+          appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // Récupérer une référence vers la table customOrdersTable
+      const customOrdersTable = document.getElementById('customOrdersTable').getElementsByTagName('tbody')[0];
+
+      // Récupérer les données depuis Firestore pour les commandes personnalisées
+db.collection("commande").get().then((querySnapshot) => {
+  let count = 1; // Initialiser le compteur
+  querySnapshot.forEach((doc) => {
+    // Récupérer les données de chaque document
+    const data = doc.data();
+    // Créer une nouvelle ligne dans le tableau
+    const newRow = customOrdersTable.insertRow();
+    // Ajouter le numéro de commande dans la première cellule
+    const numCell = newRow.insertCell(0);
+    numCell.textContent = count++; // Incrémenter le compteur à chaque itération
+    // Ajouter le nom dans la deuxième cellule
+    const nameCell = newRow.insertCell(1);
+    nameCell.textContent = data.name; // Récupérer le nom depuis le champ "name" du document Firestore
+    // Ajouter un bouton "Action" dans la troisième cellule
+    const actionCell = newRow.insertCell(2);
+    actionCell.className = 'action-cell';
+    const actionButton = document.createElement('button');
+    actionButton.textContent = 'Voir détails';
+    actionButton.className = 'button-view-details';
+    actionButton.onclick = function() {
+      // Ouvrir la page de détails de la commande dans une nouvelle fenêtre
+      window.open('details commande N&T.html?id=' + doc.id, '_blank');
+    };
+    actionCell.appendChild(actionButton);
+    // Ajouter l'état de la commande dans la quatrième cellule
+    const statusCell = newRow.insertCell(3);
+    statusCell.textContent = data.etat || 'En attente'; // Afficher l'état ou 'En attente' si non défini
+  });
+});
+
+
+// Récupérer une référence vers la table shopOrdersTable
+const shopOrdersTable = document.getElementById('shopOrdersTable').getElementsByTagName('tbody')[0];
+
+
+// Récupérer les données depuis Firestore pour les commandes personnalisées
+db.collection("achatcommandes").get().then((querySnapshot) => {
+  let count = 1; // Initialiser le compteur
+  querySnapshot.forEach((doc) => {
+    // Récupérer les données de chaque document
+    const data = doc.data();
+    // Créer une nouvelle ligne dans le tableau
+    const newRow = shopOrdersTable.insertRow();
+    // Ajouter le numéro de commande dans la première cellule
+    const numCell = newRow.insertCell(0);
+    numCell.textContent = count++; // Incrémenter le compteur à chaque itération
+    // Ajouter le nom dans la deuxième cellule
+    const nameCell = newRow.insertCell(1);
+    nameCell.textContent = data.nom; 
+    // Ajouter un bouton "Action" dans la troisième cellule
+    const actionCell = newRow.insertCell(2);
+    actionCell.className = 'action-cell';
+    const actionButton = document.createElement('button');
+    actionButton.textContent = 'Voir détails';
+    actionButton.className = 'button-view-details';
+    actionButton.onclick = function() {
+      // Ouvrir la page de détails de la commande dans une nouvelle fenêtre
+      window.open('details commande 2 N&T.html?id=' + doc.id, '_blank');
+    };
+    actionCell.appendChild(actionButton);
+    // Ajouter l'état de la commande dans la quatrième cellule
+    const statusCell = newRow.insertCell(3);
+    statusCell.textContent = data.etat || 'En attente'; // Afficher l'état ou 'En attente' si non défini
+  });
+});
+
+
+    
+  </script>
+</body>
+</html>

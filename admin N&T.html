@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Interface</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #204b35;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgb(170, 3, 3);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover, .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Administrateur </h1>
+    <h2>Clients</h2>
+    <table id="clientsTable">
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les clients seront insérés ici -->
+      </tbody>
+    </table>
+
+    <h2>Couturiers</h2>
+    <table id="couturiersTable">
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les couturiers seront insérés ici -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script>
+    // Initialisez Firebase
+    const firebaseConfig = {
+            apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+            authDomain: "projet-l3-5ea99.firebaseapp.com",
+            projectId: "projet-l3-5ea99",
+            storageBucket: "projet-l3-5ea99.appspot.com",
+            messagingSenderId: "691672960463",
+            appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+        };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Récupérez la référence de la table des clients
+    const clientsTable = document.getElementById('clientsTable').getElementsByTagName('tbody')[0];
+
+    // Récupérez les clients depuis Firestore
+    db.collection('clients').get().then((querySnapshot) => {
+      let count = 1;
+      querySnapshot.forEach((doc) => {
+        const clientData = doc.data();
+        const row = clientsTable.insertRow();
+        const cellNumber = row.insertCell(0);
+        const cellID = row.insertCell(1);
+        const cellName = row.insertCell(2);
+        const cellEmail = row.insertCell(3);
+        const cellPhone = row.insertCell(4);
+        const cellAction = row.insertCell(5);
+
+        cellNumber.textContent = count++;
+        cellID.textContent = doc.id;
+        cellName.textContent = clientData.username;
+        cellEmail.textContent = clientData.email;
+        cellPhone.textContent = clientData.tel;
+        cellAction.innerHTML = '<button onclick="deleteClient(\'' + doc.id + '\')">Supprimer</button>';
+      });
+    }).catch((error) => {
+      console.log('Erreur lors de la récupération des clients : ', error);
+    });
+
+    // Récupérez la référence de la table des couturiers
+    const couturiersTable = document.getElementById('couturiersTable').getElementsByTagName('tbody')[0];
+
+    // Récupérez les couturiers depuis Firestore
+    db.collection('couturiers').get().then((querySnapshot) => {
+      let count = 1;
+      querySnapshot.forEach((doc) => {
+        const couturierData = doc.data();
+        const row = couturiersTable.insertRow();
+        const cellNumber = row.insertCell(0);
+        const cellID = row.insertCell(1);
+        const cellName = row.insertCell(2);
+        const cellEmail = row.insertCell(3);
+        const cellPhone = row.insertCell(4);
+        const cellAction = row.insertCell(5);
+
+        cellNumber.textContent = count++;
+        cellID.textContent = doc.id;
+        cellName.textContent = couturierData.username;
+        cellEmail.textContent = couturierData.email;
+        cellPhone.textContent = couturierData.tel ;
+        cellAction.innerHTML = '<button onclick="deleteCouturier(\'' + doc.id + '\')">Supprimer</button>';
+      });
+    }).catch((error) => {
+      console.log('Erreur lors de la récupération des couturiers : ', error);
+    });
+
+    // Fonction pour supprimer un client
+    function deleteClient(clientId) {
+      db.collection('clients').doc(clientId).delete().then(() => {
+        // Rafraîchir la page après la suppression
+        location.reload();
+      }).catch((error) => {
+        console.error('Erreur lors de la suppression du client : ', error);
+      });
+    }
+
+    // Fonction pour supprimer un couturier
+    function deleteCouturier(couturierId) {
+      db.collection('couturiers').doc(couturierId).delete().then(() => {
+        // Rafraîchir la page après la suppression
+        location.reload();
+      }).catch((error) => {
+        console.error('Erreur lors de la suppression du couturier : ', error);
+      });
+    }
+  </script>
+</body>
+</html>

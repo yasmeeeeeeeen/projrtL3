@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passer commande</title>
+<style>
+    body {
+        margin: 20px;
+        display: grid;
+        background-color: whitesmoke;
+    }
+
+    ul {
+        display: flex;
+        list-style: none;
+    }
+
+    li {
+        margin-left: 50px;
+    }
+
+    form {
+        color: rgb(155, 155, 49);
+    }
+
+    .image {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        text-align: center;
+    }
+
+    .image h1 {
+        margin: 50px;
+    }
+
+    #imagePreviewContainer {
+        float: right;
+        margin-left: 20px;
+    }
+
+    #imagePreview {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        margin: 0 auto 100px;
+    }
+
+    #fileInputLabel {
+        clear: both;
+        justify-self: center;
+        color: rgb(155, 155, 49);
+        cursor: pointer;
+    }
+
+    .comment-interface {
+        background-color: whitesmoke;
+        margin: 20px;
+    }
+
+    .comment-input {
+        position: relative;
+    }
+
+    #placeholder {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #888;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-top: 30px;
+    }
+
+    #submitCommentBtn {
+        width: 40%;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #204b35;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: rgb(155, 155, 49);
+    }
+
+    .color {
+        text-align: center;
+    }
+
+    .color h1 {
+        margin-bottom: 10px;
+    }
+
+    .colorPicker {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .colorPicker label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .palette {
+        text-align: center;
+    }
+
+    .color-palette {
+        list-style: none;
+        padding: 0;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin: 5px;
+        cursor: pointer;
+        border: 2px solid rgb(88, 87, 87);
+        transition: border-color 0.3s ease;
+    }
+
+    .selected {
+        border:4px solid rgb(155, 155, 49);
+    }
+
+    .container {
+        background-color: whitesmoke;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        width: 100%;
+        height: auto;
+        justify-items: center;
+    }
+
+    .image-container {
+        text-align: center;
+    }
+
+    img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .measure label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .measure input {
+        padding: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+    
+    .measure input[type="text"]:invalid {
+        border: 2px solid #204b35;
+    }
+    .image input[type="file"]{
+      justify-content: center;
+
+    }
+    .measure {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        color: black;
+        text-align: center;
+        margin: 0 auto 100px;
+    }
+ 
+    @media (max-width: 991px) {
+        html {
+            font-size: 55%;
+        }
+
+        .comment-interface {
+            width: 80rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .comment-interface {
+            overflow-y: scroll;
+        }
+
+        .comment-interface {
+            width: 80rem;
+        }
+
+        .container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 450px) {
+        html {
+            font-size: 50%;
+        }
+
+        .container {
+            grid-template-columns: 1fr;
+        }
+    }
+    .center-file-input {
+    display: block;
+    margin: 0 auto;
+    }
+    
+</style>
+</head>
+<body>
+  <h1>Informations de contact</h1>
+<div class="contact-info">
+    <label   for="fullName">Nom complet</label>
+    <input id="name" type="text" id="fullName" name="fullName" required>
+    <label  for="address">Adresse</label>
+    <input id="adress" type="text" id="address" name="address" required>
+    <label  for="phoneNumber">Numéro de téléphone</label>
+    <input id="phone"  type="text" id="phoneNumber" name="phoneNumber" required>
+</div>
+<br>
+  <div class="image">
+    <h1>Envoyer une image du modèle</h1>
+    <div id="imagePreviewContainer">
+        <img id="imagePreview" src="#" alt="Preview Image" >
+    </div>
+    <br>
+    <input type="file" id="fileInput" class="center-file-input" accept="image/*" required>
+   
+    <br>
+    <div class="color">
+      <h1>Choisissez une couleur</h1>
+      <input type="color" id="colorPicker" name="colorPicker" required>
+      <div class="colorPicker">
+          <ul class="color-palette">
+              <li class="color-swatch" style="background-color:#868686;" data-color="#868686"></li>
+              <li class="color-swatch" style="background-color:#ffffff;" data-color="#ffffff"></li>
+              <li class="color-swatch" style="background-color:#f5149f;" data-color="#f5149f"></li>
+              <li class="color-swatch" style="background-color:#6e1651;" data-color="#6e1651"></li>
+              <li class="color-swatch" style="background-color:#1a06cc;" data-color="#1a06cc"></li>
+              <li class="color-swatch" style="background-color:#04831f;" data-color="#04831f"></li>
+              <li class="color-swatch" style="background-color:#b9df11;" data-color="#b9df11"></li>
+              <li class="color-swatch" style="background-color:#ff4500;" data-color="#ff4500"></li>
+              <li class="color-swatch" style="background-color:#fa0505;" data-color="#fa0505"></li>
+              <li class="color-swatch" style="background-color:#863902;" data-color="#863902"></li>
+              <li class="color-swatch" style="background-color:#000000;" data-color="#000000"></li>
+          </ul>
+      </div>
+  </div>
+    <div class="comment-interface">
+        <div class="comment-input">
+            <h1><span id="placeholder="></span>Entrer votre commentaire:</span></h1>
+            <textarea id="commentText" rows="4"></textarea>
+        </div>
+    </div>
+    
+    <div class="image">
+      <h1>Insérer une photo de la deuxième piece</h1>
+      <div id="imagePreviewContainer">
+          <img id="imagePreview2" src="#" alt="Preview Image">
+      </div>
+      <br>
+      <input type="file" id="fileInput2" class="center-file-input" accept="image/*">
+    
+      <br>
+  </div>
+
+  <div class="color">
+    <h1>Choisissez une couleur</h1>
+    <input type="color" id="colorPicker2" name="colorPicker">
+    <div class="colorPicker">
+     
+        <ul class="color-palette">
+            <li class="color-swatch" style="background-color:#868686;" data-color="#868686"></li>
+            <li class="color-swatch" style="background-color:#ffffff;" data-color="#ffffff"></li>
+            <li class="color-swatch" style="background-color:#f5149f;" data-color="#f5149f"></li>
+            <li class="color-swatch" style="background-color:#6e1651;" data-color="#6e1651"></li>
+            <li class="color-swatch" style="background-color:#1a06cc;" data-color="#1a06cc"></li>
+            <li class="color-swatch" style="background-color:#04831f;" data-color="#04831f"></li>
+            <li class="color-swatch" style="background-color:#b9df11;" data-color="#b9df11"></li>
+            <li class="color-swatch" style="background-color:#ff4500;" data-color="#ff4500"></li>
+            <li class="color-swatch" style="background-color:#fa0505;" data-color="#fa0505"></li>
+            <li class="color-swatch" style="background-color:#863902;" data-color="#863902"></li>
+            <li class="color-swatch" style="background-color:#000000;" data-color="#000000"></li>
+        </ul>
+    </div>
+</div>
+<div class="image">
+  <h1>Insérer une photo de la Troisième piece</h1>
+  <div id="imagePreviewContainer">
+      <img id="imagePreview3" src="#" alt="Preview Image">
+  </div>
+  <br>
+  <input type="file" id="fileInput3" class="center-file-input" accept="image/*">
+  
+  <br>
+</div>
+
+<div class="color">
+<h1>Choisissez une couleur</h1>
+<input type="color" id="colorPicker3" name="colorPicker">
+<div class="colorPicker">
+    <ul class="color-palette">
+        <li class="color-swatch" style="background-color:#868686;" data-color="#868686"></li>
+        <li class="color-swatch" style="background-color:#ffffff;" data-color="#ffffff"></li>
+        <li class="color-swatch" style="background-color:#f5149f;" data-color="#f5149f"></li>
+        <li class="color-swatch" style="background-color:#6e1651;" data-color="#6e1651"></li>
+        <li class="color-swatch" style="background-color:#1a06cc;" data-color="#1a06cc"></li>
+        <li class="color-swatch" style="background-color:#04831f;" data-color="#04831f"></li>
+        <li class="color-swatch" style="background-color:#b9df11;" data-color="#b9df11"></li>
+        <li class="color-swatch" style="background-color:#ff4500;" data-color="#ff4500"></li>
+        <li class="color-swatch" style="background-color:#fa0505;" data-color="#fa0505"></li>
+        <li class="color-swatch" style="background-color:#863902;" data-color="#863902"></li>
+        <li class="color-swatch" style="background-color:#000000;" data-color="#000000"></li>
+    </ul>
+</div>
+</div>
+
+<div class="image">
+<h1>Insérer une photo de la quatrième piece</h1>
+<div id="imagePreviewContainer">
+  <img id="imagePreview4" src="#" alt="Preview Image">
+</div>
+<br>
+<input type="file" id="fileInput4" class="center-file-input" accept="image/*" >
+
+<br>
+</div>
+
+<div class="color">
+<h1>Choisissez une couleur</h1>
+<input type="color" id="colorPicker4" name="colorPicker">
+<div class="colorPicker">
+  <ul class="color-palette">
+      <li class="color-swatch" style="background-color:#868686;" data-color="#868686"></li>
+      <li class="color-swatch" style="background-color:#ffffff;" data-color="#ffffff"></li>
+      <li class="color-swatch" style="background-color:#f5149f;" data-color="#f5149f"></li>
+      <li class="color-swatch" style="background-color:#6e1651;" data-color="#6e1651"></li>
+      <li class="color-swatch" style="background-color:#1a06cc;" data-color="#1a06cc"></li>
+      <li class="color-swatch" style="background-color:#04831f;" data-color="#04831f"></li>
+      <li class="color-swatch" style="background-color:#b9df11;" data-color="#b9df11"></li>
+      <li class="color-swatch" style="background-color:#ff4500;" data-color="#ff4500"></li>
+      <li class="color-swatch" style="background-color:#fa0505;" data-color="#fa0505"></li>
+      <li class="color-swatch" style="background-color:#863902;" data-color="#863902"></li>
+      <li class="color-swatch" style="background-color:#000000;" data-color="#000000"></li>
+  </ul>
+</div>
+</div>
+
+
+<h1>Entrez vos mesures</h1>
+</div>
+
+    <div class="container">
+      <div class="measure" >
+        <div class="image-container">
+            <img src="epaule.png" alt="erreur">
+        </div>
+        <label for="measure1">Largeur d'épaule</label>
+        <input type="text" id="measure1" name="measure1" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="tour de poitrine.jpeg" alt="erreur">
+        </div>
+        <label for="measure2">Tour de poitrine</label>
+        <input type="text" id="measure2" name="measure2" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="hauteur de poitrine.jpg" alt="erreur">
+        </div>
+        <label for="measure3">Hauteur de poitrine</label>
+        <input type="text" id="measure3" name="measure3" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="hauteur du buste.jpeg" alt="erreur">
+        </div>
+        <label for="measure4">Hauteur de buste</label>
+        <input type="text" id="measure4" name="measure4" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="tour du taille.png" alt="erreur">
+        </div>
+        <label for="measure5">Tour de taille</label>
+        <input type="text" id="measure5" name="measure5" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="largeur du ventre.jpg" alt="erreur">
+        </div>
+        <label for="measure6">Largeur du ventre</label>
+        <input type="text" id="measure6" name="measure6" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="tour hanche.jpeg" alt="erreur">
+        </div>
+        <label for="measure7">Tour de hanche</label>
+        <input type="text" id="measure7" name="measure7" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="longueure laérale.jpeg" alt="erreur">
+        </div>
+        <label for="measure8">Longueur latérale</label>
+        <input type="text" id="measure8" name="measure8" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="manche.jpg" alt="erreur">
+        </div>
+        <label for="measure9">Longueur du bras</label>
+        <input type="text" id="measure9" name="measure9" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="tour du bras.jpg" alt="erreur">
+        </div>
+        <label for="measure10">Tour du bras</label>
+        <input type="text" id="measure10" name="measure10" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="poignet.jpeg" alt="erreur">
+        </div>
+        <label for="measure11">Tour de poignet</label>
+        <input type="text" id="measure11" name="measure11" required>
+    </div>
+    <div class="measure">
+        <div class="image-container">
+            <img src="longueur.jpeg" alt="erreur">
+        </div>
+        <label for="measure12">Longueur</label>
+        <input type="text" id="measure12" name="measure12" required>
+    </div>
+</div>
+    </div>
+    
+
+    <div style="display: flex; justify-content: center;">
+        <button id="submitCommentBtn">Envoyer</button>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        // Initialisez Firebase
+        const firebaseConfig = {
+                apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+                authDomain: "projet-l3-5ea99.firebaseapp.com",
+                projectId: "projet-l3-5ea99",
+                storageBucket: "projet-l3-5ea99.appspot.com",
+                messagingSenderId: "691672960463",
+                appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+            };
+        firebase.initializeApp(firebaseConfig);
+
+
+        const db = firebase.firestore();
+        document.getElementById('submitCommentBtn').onclick = function() {
+          //Récupérer les informations du client
+          const name = document.getElementById('name').value;
+          const phone = document.getElementById('phone').value;
+          const adress = document.getElementById('adress').value;
+
+         // Récupérer les valeurs des champs de mesure
+          const measure1 = document.getElementById('measure1').value;
+          const measure2 = document.getElementById('measure2').value;
+          const measure3 = document.getElementById('measure3').value;
+          const measure4 = document.getElementById('measure4').value;
+          const measure5 = document.getElementById('measure5').value;
+          const measure6 = document.getElementById('measure6').value;
+          const measure7 = document.getElementById('measure7').value;
+          const measure8 = document.getElementById('measure8').value;
+          const measure9 = document.getElementById('measure9').value;
+          const measure10 = document.getElementById('measure10').value;
+          const measure11 = document.getElementById('measure11').value;
+          const measure12 = document.getElementById('measure12').value;
+         
+
+         // Récupérer les valeurs des couleurs
+         const color1 = document.getElementById('colorPicker').value;
+         const color2 = document.getElementById('colorPicker2').value;
+         const color3 = document.getElementById('colorPicker3').value;
+         const color4 = document.getElementById('colorPicker4').value;
+
+         //Récupérer les images
+
+         const image1=document.getElementById('fileInput').value;
+         const image2=document.getElementById('fileInput2').value;
+         const image3=document.getElementById('fileInput3').value;
+         const image4=document.getElementById('fileInput4').value;
+         
+
+
+         // Récupérer le commentaire
+         const comment = document.getElementById('commentText').value;
+
+       
+
+      
+         // Enregistrer les données dans Firestore
+          db.collection("commande").add({
+            name:name,
+            phone:phone,
+            adress:adress,
+
+          mesure1: measure1,
+          mesure2: measure2,
+          mesure3: measure3,
+          mesure4: measure4,
+          mesure5: measure5,
+          mesure6: measure6,
+          mesure7: measure7,
+          mesure8: measure8,
+          mesure9: measure9,
+          mesure10: measure10,
+          mesure11: measure11,
+          mesure12: measure12,
+          
+          couleur1: color1,
+          couleur2: color2,
+          couleur3: color3,
+          couleur4: color4,
+
+          image1:image1,
+          image2:image2,
+          image3:image3,
+          image4:image4,
+          
+         commentaire: comment
+        })
+
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+        // Effacer les champs après l'envoi
+        document.getElementById('commentText').value = '';
+        // Effacer les champs de mesure après l'envoi
+        document.querySelectorAll('.measure input[type="text"]').forEach(input => {
+            input.value = '';
+        });
+        // Mettre à jour l'aperçu de l'image
+        document.getElementById('imagePreview').src = '';
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+};
+
+
+
+
+        // Gérez le changement de fichier pour l'élément fileInput
+        document.getElementById('fileInput').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block'; // Afficher l'image1
+                };
+                reader.onerror = function(event) {
+                    console.error("Erreur de chargement de l'image.");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        document.getElementById('fileInput2').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var imagePreview2 = document.getElementById('imagePreview2');
+                    imagePreview2.src = event.target.result;
+                    imagePreview2.style.display = 'block'; // Afficher l'image2
+                };
+                reader.onerror = function(event) {
+                    console.error("Erreur de chargement de l'image.");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+document.getElementById('fileInput3').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var imagePreview = document.getElementById('imagePreview3');
+                    imagePreview3.src = event.target.result;
+                    imagePreview3.style.display = 'block'; // Afficher l'image3
+                };
+                reader.onerror = function(event) {
+                    console.error("Erreur de chargement de l'image.");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Gérez le changement de fichier pour l'élément fileInput
+        document.getElementById('fileInput4').addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var imagePreview4 = document.getElementById('imagePreview4');
+                    imagePreview4.src = event.target.result;
+                    imagePreview4.style.display = 'block'; // Afficher l'image4
+                };
+                reader.onerror = function(event) {
+                    console.error("Erreur de chargement de l'image.");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Gérez le focus et le blur de l'élément commentText
+        var placeholder = document.getElementById('placeholder');
+        var commentText = document.getElementById('commentText');
+
+        commentText.onfocus = function() {
+            placeholder.style.display = 'none';
+        }
+
+        commentText.onblur = function() {
+            if (commentText.value === '') {
+                placeholder.style.display = 'block';
+            }
+        }
+
+      // Gérez le changement de couleur pour tous les input de type color
+    const colorInputs = document.querySelectorAll('input[type="color"]');
+    colorInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const selectedColor = this.value;
+            console.log('Couleur sélectionnée :', selectedColor);
+            // Utilisez la couleur sélectionnée comme vous le souhaitez
+        });
+    });
+
+    // Gérez le clic sur les swatches de couleur pour tous les input de type color
+    document.addEventListener("DOMContentLoaded", function() {
+        const colorSwatches = document.querySelectorAll('.color-swatch');
+        colorSwatches.forEach(swatch => {
+            swatch.addEventListener('click', function() {
+                const color = swatch.style.backgroundColor;
+                const parentInput = swatch.closest('.color').querySelector('input[type="color"]');
+                parentInput.value = rgbToHex(color);
+                parentInput.dispatchEvent(new Event('input'));
+            });
+        });
+  
+
+            function rgbToHex(rgb) {
+                // Convertir la couleur RGB en format hexadécimal
+                rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+                function hex(x) {
+                    return ("0" + parseInt(x).toString(16)).slice(-2);
+                }
+                return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+            }
+        });
+    </script>
+</body>
+</html>
+

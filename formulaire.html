@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de commande</title>
+    <style>
+    body {
+        background-image: url("a propos 2.jpg");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;      
+        margin: 0;
+    }
+
+    .form-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .form-container h2 {
+        text-align: center;
+        color: #204b35;
+        margin-bottom: 20px;
+    }
+
+    .form-container p {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .form-group input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .form-group input[readonly] {
+        background-color: #e9e9e9;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-group input[type="button"] {
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        border-radius: 20px;
+        flex: 1;
+        margin: 5px;
+    }
+
+    .button-group input[type="button"].cancel-btn {
+        background-color: #757474;
+        color: white;
+    }
+
+    .button-group input[type="button"].confirm-btn {
+        background-color: #204b35;
+        color: white;
+    }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Pour confirmer votre commande veuillez remplir ce formulaire</h2>
+       
+        <form id="order-form">
+            <div class="form-group">
+                <label for="productName">Produit :</label>
+                <input type="text" id="productName" name="produit" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Prix :</label>
+                <input type="text" id="productPrice" name="price" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="productSize">Taille :</label>
+                <input type="text" id="productSize" name="size" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="productColor">Couleur :</label>
+                <input type="text" id="productColor" name="color" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="Name">Nom complet :</label>
+                <input type="text" id="tName" name="Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Numéro de téléphone :</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Adresse :</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+
+            <div class="button-group">
+                <input type="button" id="cancel-btn" class="cancel-btn" value="Annuler">
+                <input type="button" id="confirm-btn" class="confirm-btn" value="Confirmer">
+            </div>
+        </form>
+    </div>
+        
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUFRaVPMJ3cSmTs8W0bQeVHq4d-HTWpx8",
+            authDomain: "projet-l3-5ea99.firebaseapp.com",
+            projectId: "projet-l3-5ea99",
+            storageBucket: "projet-l3-5ea99.appspot.com",
+            messagingSenderId: "691672960463",
+            appId: "1:691672960463:web:010b59f87bf7da3ca816ba"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const achatId = new URLSearchParams(window.location.search).get('id');
+
+        db.collection('achat').doc(achatId).get().then((doc) => {
+            if (doc.exists) {
+                const achatData = doc.data();
+                document.getElementById('productName').value = achatData.nom_produit;
+                document.getElementById('productPrice').value = achatData.prix;
+                document.getElementById('productSize').value = achatData.taille;
+                document.getElementById('productColor').value = achatData.couleur;
+            } else {
+                console.log("Aucun document trouvé !");
+            }
+        }).catch((error) => {
+            console.error("Erreur lors de la récupération du document:", error);
+        });
+
+        document.getElementById('cancel-btn').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+    // Récupérer les valeurs des champs
+    const name = document.getElementById('tName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const address = document.getElementById('address').value;
+
+    // Vérifier si tous les champs requis sont remplis
+    if (name.trim() === '' || phoneNumber.trim() === '' || address.trim() === '') {
+        // Afficher un message d'erreur si un champ est vide
+        alert("Veuillez remplir tous les champs obligatoires.");
+    } else {
+        // Tous les champs sont remplis, soumettre le formulaire
+        const orderData = {
+            nom: name,
+            telephone: phoneNumber,
+            adresse: address,
+            produit: document.getElementById('productName').value,
+            prix: document.getElementById('productPrice').value,
+            taille: document.getElementById('productSize').value,
+            couleur: document.getElementById('productColor').value,
+            date: new Date()
+        };
+
+        // Soumettre la commande
+        db.collection('achatcommandes').add(orderData).then(() => {
+            alert("Commande confirmée avec succès!");
+            window.history.back();
+        }).catch((error) => {
+            console.error("Erreur lors de la confirmation de la commande:", error);
+        });
+    }
+});
+
+       
+    </script>
+</body>
+</html>
